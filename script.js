@@ -49,33 +49,11 @@ map.on('load', () => {
         'type': 'vector',
         'url': 'mapbox://vette243.6n1u76zi'
     });
-    map.addSource('Green_Space', {
-        type: 'geojson',
-        data: 'https://github.com/vette243/Lab3_GGR472/blob/1247dfcb473a34d2526e5dd456f9befa42feef4c/Green%20Spaces.geojson'
-    });
 
-    map.addLayer({
-        'id': 'Area of Parks',
-        'type': 'fill',
-        'source': 'Green Space',
-        'paint': {
-            'fill-color': [
-                'step', // STEP expression produces stepped results based on value pairs
-                ['get', 'POP2021'], // GET expression retrieves property value from 'capacity' data field
-                '#fd8d3c', // Colour assigned to any values < first step
-                100000, '#fc4e2a', // Colours assigned to values >= each step
-                500000, '#e31a1c',
-                1000000, '#bd0026',
-                5000000, '#800026'
-            ],
-            'fill-opacity': 0.5,
-            'fill-outline-color': 'white'
-        }
-    }),
     map.addLayer({
         'id': 'Details',
         'type': 'fill',
-        'source': 'Green_Space',
+        'source': 'Green Space',
         'paint': {
             'fill-color': [
                 'step', // STEP expression produces stepped results based on value pairs
@@ -169,10 +147,41 @@ legendcheck.addEventListener('click', () => {
 //Change map layer display based on check box using setlayoutproperty
 document.getElementById('layercheck').addEventListener('change', (e) => {
     map.setLayoutProperty(
-        'Green Space',
+        'Area of Parks',
         'visibility',
         e.target.checked ? 'visible' : 'none'
     );
 });
+
+// When a click event occurs on a feature in the places layer, open a popup at the
+// location of the feature, with description HTML from its properties.
+map.on('click', 'Area of Parks', (e) => {
+    // Copy coordinates array.
+    const coordinates = e.features[0].geometry.coordinates.slice();
+    const description = e.features[0].properties;
+     
+    // Ensure that if the map is zoomed out such that multiple
+    // copies of the feature are visible, the popup appears
+    // over the copy being pointed to.
+    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+    }
+     
+    new mapboxgl.Popup()
+    .setLngLat(coordinates)
+    .setHTML(description)
+    .addTo(map);
+    });
+     
+    // Change the cursor to a pointer when the mouse is over the places layer.
+    map.on('mouseenter', 'Details', () => {
+    map.getCanvas().style.cursor = 'pointer';
+    });
+     
+    // Change it back to a pointer when it leaves.
+    map.on('mouseleave', 'Details', () => {
+    map.getCanvas().style.cursor = '';
+    });
+
 
 
