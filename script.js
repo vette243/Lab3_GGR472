@@ -6,9 +6,9 @@ mapboxgl.accessToken = 'pk.eyJ1IjoidmV0dGUyNDMiLCJhIjoiY2xlNHJqbHNrMDVzNzNucDJrY
 const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/vette243/cle4pjfh6002401pal69tqaif',
-//center: the center for the map area,for my map would be the GTA area
-    center: [43.665,-79.418],
-    zoom: 12.03
+    //center: the center for the map area,for my map would be the GTA area
+    center: [-79.418,43.665],
+    zoom: 12
 });
 
 
@@ -70,13 +70,37 @@ map.on('load', () => {
             ],
             'fill-opacity': 0.5,
             'fill-outline-color': 'white'
-        },
-        'source-layer': 'vette243.6n1u76zi'
-    });
-
+        }
+    }),
+    map.addLayer({
+        'id': 'Details',
+        'type': 'fill',
+        'source': 'Green_Space',
+        'paint': {
+            'fill-color': [
+                'step', // STEP expression produces stepped results based on value pairs
+                ['get', 'POP2021'], // GET expression retrieves property value from 'capacity' data field
+                '#fd8d3c', // Colour assigned to any values < first step
+                100000, '#fc4e2a', // Colours assigned to values >= each step
+                500000, '#e31a1c',
+                1000000, '#bd0026',
+                5000000, '#800026'
+            ],
+            'fill-opacity': 0.5,
+            'fill-outline-color': 'white'
+        }
+    })
 });
-
-
+//get geo-coordinate from mouse move
+    map.on('mousemove', (e) => {
+        document.getElementById('info').innerHTML =
+    // `e.point` is the x, y coordinates of the `mousemove` event
+    // relative to the top-left corner of the map.
+        JSON.stringify(e.point) +
+    '<br />' +
+    // `e.lngLat` is the longitude, latitude geographical position of the event.
+        JSON.stringify(e.lngLat.wrap());
+    })
 
 /*--------------------------------------------------------------------
 CREATE LEGEND IN JAVASCRIPT
@@ -121,8 +145,8 @@ ADD INTERACTIVITY BASED ON HTML EVENT
 //Add event listeneer which returns map view to full screen on button click
 document.getElementById('returnbutton').addEventListener('click', () => {
     map.flyTo({
-        center: [-105, 58],
-        zoom: 3,
+        center: [ -79.418,43.665],
+        zoom: 12,
         essential: true
     });
 });
@@ -145,7 +169,7 @@ legendcheck.addEventListener('click', () => {
 //Change map layer display based on check box using setlayoutproperty
 document.getElementById('layercheck').addEventListener('change', (e) => {
     map.setLayoutProperty(
-        'provterr-fill',
+        'Green Space',
         'visibility',
         e.target.checked ? 'visible' : 'none'
     );

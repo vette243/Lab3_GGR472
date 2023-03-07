@@ -69,3 +69,8 @@
     width: 10px;
     margin-right: 5px; /*position of circle*/
 }
+
+.mapboxgl-popup {
+    max-width: 400px;
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    }
