@@ -5,13 +5,10 @@ mapboxgl.accessToken = 'pk.eyJ1IjoidmV0dGUyNDMiLCJhIjoiY2xlNHJqbHNrMDVzNzNucDJrY
 //Initialize map
 const map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/lgsmith/ckoyrp6z71apc17ph5d5zlcno',
-    center: [-105, 58],
-    zoom: 3,
-    maxBounds: [
-        [-180, 30], // Southwest
-        [-25, 84]  // Northeast
-    ],
+    style: 'mapbox://styles/vette243/cle4pjfh6002401pal69tqaif',
+//center: the center for the map area,for my map would be the GTA area
+    center: [43.665,-79.418],
+    zoom: 12.03
 });
 
 
@@ -34,7 +31,7 @@ mapbox addControl method can also take position parameter
 const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     mapboxgl: mapboxgl,
-    countries: "ca"
+    countries: "CA"
 });
 
 //Use geocoder div to position geocoder on page
@@ -48,15 +45,19 @@ Use get expression to categorise data based on population values
 --------------------------------------------------------------------*/
 //Add data source and draw initial visiualization of layer
 map.on('load', () => {
-    map.addSource('canada-provterr', {
+    map.addSource('Green Space', {
         'type': 'vector',
-        'url': 'mapbox://lgsmith.843obi8n'
+        'url': 'mapbox://vette243.6n1u76zi'
+    });
+    map.addSource('Green_Space', {
+        type: 'geojson',
+        data: 'https://github.com/vette243/Lab3_GGR472/blob/1247dfcb473a34d2526e5dd456f9befa42feef4c/Green%20Spaces.geojson'
     });
 
     map.addLayer({
-        'id': 'provterr-fill',
+        'id': 'Area of Parks',
         'type': 'fill',
-        'source': 'canada-provterr',
+        'source': 'Green Space',
         'paint': {
             'fill-color': [
                 'step', // STEP expression produces stepped results based on value pairs
@@ -70,7 +71,7 @@ map.on('load', () => {
             'fill-opacity': 0.5,
             'fill-outline-color': 'white'
         },
-        'source-layer': 'can-provterr2021-9crjaq'
+        'source-layer': 'vette243.6n1u76zi'
     });
 
 });
@@ -82,19 +83,11 @@ CREATE LEGEND IN JAVASCRIPT
 --------------------------------------------------------------------*/
 //Declare arrayy variables for labels and colours
 const legendlabels = [
-    '0-100,000',
-    '100,000-500,000',
-    '500,000-1,000,000',
-    '1,000,000-5,000,000',
-    '>5,000,000'
+    'current green space'
 ];
 
 const legendcolours = [
-    '#fd8d3c',
-    '#fc4e2a',
-    '#e31a1c',
-    '#bd0026',
-    '#800026'
+    '#2c7f32'
 ];
 
 //Declare legend variable using legend div tag
